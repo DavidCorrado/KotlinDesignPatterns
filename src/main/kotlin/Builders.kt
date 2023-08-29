@@ -2,7 +2,7 @@ fun main() {
     val user = User.Builder().firstName("David").lastName("Corrado").id(1).build()
     println(user)
 
-    val user2 = User(firstName = "David", lastName = "Corrado", 2)
+    val user2 = User2(firstName = "David", lastName = "Corrado", 2)
     println(user2)
 
     runCatching {
@@ -10,9 +10,15 @@ fun main() {
     }.onFailure {
         println(it)
     }
+
+    runCatching {
+        User2(firstName = "David", lastName = "Corrado")
+    }.onFailure {
+        println(it)
+    }
 }
 
-data class User(
+class User private constructor(
     val firstName: String,
     val lastName: String,
     val id: Int
@@ -20,6 +26,11 @@ data class User(
     init {
         if(id == -1) throw Exception("id is required")
     }
+
+    override fun toString(): String {
+        return "User(firstName=$firstName, lastName=$lastName, id=$id)"
+    }
+
     data class Builder(
         private var firstName: String = "",
         private var lastName: String = "",
@@ -29,5 +40,15 @@ data class User(
         fun lastName(lastName: String) = apply { this.lastName = lastName }
         fun id(id: Int) = apply { this.id = id }
         fun build() = User(firstName, lastName, id)
+    }
+}
+
+data class User2(
+    val firstName: String,
+    val lastName: String,
+    val id: Int = -1
+) {
+    init {
+        if(id == -1) throw Exception("id is required")
     }
 }
